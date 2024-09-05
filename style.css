@@ -8,9 +8,10 @@ body {
 }
 
 
-.heading h1 {
+.heading h2 {
     align-items: center;
     justify-content: center;
+    font-weight: 700;
 }
 
 .board-top {
@@ -39,7 +40,6 @@ table tr td {
     width: 55px;
     height: 55px;
     text-align: center;
-
 
 
 }
@@ -72,4 +72,9 @@ img {
 
 .showCursorPointer {
     cursor: pointer;
+}
+
+
+.activeCell {
+    color: rgb(247,246,179);
 }

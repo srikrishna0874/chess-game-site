@@ -75,6 +75,7 @@ img {
 }
 
 
-.activeCell {
-    color: rgb(247,246,179);
+table tr td .activeCell {
+    color: red !important;
+    z-index: 1;
 }

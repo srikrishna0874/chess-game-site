@@ -6,22 +6,25 @@ const tdElements = document.getElementsByTagName('TD');
 for (let i = 0; i < tdElements.length; i++) {
     tdElements[i].addEventListener('mouseenter', () => {
         //for showing dots
+
         if (tdElements[i].querySelector('img')) {
             tdElements[i].classList.add('showCursorPointer');
-            tdElements[i].addEventListener('click', () => {
-                if(tdElements[i].classList.contains('activeCell')) {
-                    console.log('already active');
-                    tdElements[i].classList.remove('activeCell');
-                }
-                else {
-                    console.log('adding active bg');
-                    tdElements[i].classList.add('activeCell');
-                }
-            });
+            
         }
         //for placing pieces
         else {
 
+        }
+    });
+
+    tdElements[i].addEventListener('click', () => {
+        if (tdElements[i].classList.contains('activeCell')) {
+            console.log('already active');
+            tdElements[i].classList.remove('activeCell');
+        }
+        else {
+            console.log('adding active bg');
+            tdElements[i].classList.add('activeCell');
         }
     });
 }

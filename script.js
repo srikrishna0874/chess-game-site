@@ -19,42 +19,47 @@ for (let i = 0; i < tdElements.length; i++) {
     tdElements[i].addEventListener('click', () => {
 
         if (tdElements[i].querySelector('img')) {
-            //remove active bg every where in the board if any
-            if (previouslyActiveCellIndex != -1) {
-                tdElements[previouslyActiveCellIndex].classList.remove('activeCell');
-                if (isBlack(previouslyActiveCellIndex)) {
-                    tdElements[previouslyActiveCellIndex].classList.add('blackCell');
-                }
-                else {
-                    tdElements[previouslyActiveCellIndex].classList.add('whiteCell');
-                }
-            }
-
-            //now change bg of clicked one
-            if (tdElements[i].classList.contains('whiteCell')) {
-                tdElements[i].classList.remove('whiteCell');
-            }
-            else if (tdElements[i].classList.contains('blackCell')) {
-                tdElements[i].classList.remove('blackCell');
-            }
-            if (tdElements[i] == previouslyActiveCellIndex) {
-                console.log('already active');
-                tdElements[i].classList.remove('activeCell');
-                if (isBlack(i)) {
-                    tdElements[i].classList.add('blackCell');
-                }
-                else {
-                    tdElements[i].classList.add('whiteCell');
-                }
-                previouslyActiveCellIndex = -1;
-            }
-            else {
-                console.log('adding active bg');
-                tdElements[i].classList.add('activeCell');
-                previouslyActiveCellIndex = i;
-            }
+            manageBackGroundOnClick(i);
         }
     });
+}
+
+
+function manageBackGroundOnClick(i) {
+    //remove active bg every where in the board if any
+    if (previouslyActiveCellIndex != -1) {
+        tdElements[previouslyActiveCellIndex].classList.remove('activeCell');
+        if (isBlack(previouslyActiveCellIndex)) {
+            tdElements[previouslyActiveCellIndex].classList.add('blackCell');
+        }
+        else {
+            tdElements[previouslyActiveCellIndex].classList.add('whiteCell');
+        }
+    }
+
+    //now change bg of clicked one
+    if (tdElements[i].classList.contains('whiteCell')) {
+        tdElements[i].classList.remove('whiteCell');
+    }
+    else if (tdElements[i].classList.contains('blackCell')) {
+        tdElements[i].classList.remove('blackCell');
+    }
+    if (i == previouslyActiveCellIndex) {
+        console.log('already active');
+        tdElements[i].classList.remove('activeCell');
+        if (isBlack(i)) {
+            tdElements[i].classList.add('blackCell');
+        }
+        else {
+            tdElements[i].classList.add('whiteCell');
+        }
+        previouslyActiveCellIndex = -1;
+    }
+    else {
+        console.log('adding active bg');
+        tdElements[i].classList.add('activeCell');
+        previouslyActiveCellIndex = i;
+    }
 }
 
 function isBlack(n) {

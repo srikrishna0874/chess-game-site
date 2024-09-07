@@ -3,6 +3,7 @@ const tdElements = document.getElementsByTagName('TD');
 // console.log(tdElements.length);
 
 let previouslyActiveCellIndex = -1;
+let chessBoard = [];
 
 
 for (let i = 0; i < tdElements.length; i++) {
@@ -20,9 +21,98 @@ for (let i = 0; i < tdElements.length; i++) {
 
         if (tdElements[i].querySelector('img')) {
             manageBackGroundOnClick(i);
+            showDotsForClickedCell(i);
         }
     });
 }
+
+
+
+function canBePlacedAtPos(row, col) {
+    index = row * 8 + col + 8;
+    if (row < 8 && col < 8) {
+        if (tdElements[index].querySelector('img')) {
+            return false;
+        }
+
+    }
+    return true;
+}
+
+
+
+function getMovablePositionsForPiece(piece, row, col) {
+    const indicesToShowDots = [];
+    console.log('piece is at row=' + row + ' and col=' + col);
+    if (piece == 'pawn_black') {
+        if (canBePlacedAtPos(row + 1, col)) {
+            indicesToShowDots.push([row + 1, col]);
+            if (canBePlacedAtPos(row + 2, col)) {
+                indicesToShowDots.push([row + 2, col]);
+            }
+        }
+
+
+
+    }
+    else if (piece == 'pawn_white') {
+        if (canBePlacedAtPos(row - 1, col)) {
+            indicesToShowDots.push([row - 1, col]);
+            if (canBePlacedAtPos(row - 2, col)) {
+                indicesToShowDots.push([row - 2, col]);
+            }
+        }
+    }
+    else if (piece == 'rook_black') {
+
+    }
+    else if (piece == 'rook_white') {
+
+    }
+    else if (piece == 'knight_black') {
+
+    }
+    else if (piece == 'knight_white') {
+
+    }
+    else if (piece == 'bishop_black') {
+
+    }
+    else if (piece == 'bishop_white') {
+
+    }
+    else if (piece == 'queen_black') {
+
+    }
+    else if (piece == 'queen_white') {
+
+    }
+    else if (piece == 'king_black') {
+
+    }
+    else if (piece == 'king_white') {
+
+    }
+    console.log(indicesToShowDots);
+    return indicesToShowDots;
+}
+
+function showDotsForClickedCell(i) {
+    //console.log(tdElements[i].classList.toString());
+    if (tdElements[i].classList.contains('activeCell')) {
+        const img = tdElements[i].querySelector('img');
+        const imgSrc = img.getAttribute('src');
+        //console.log(imgSrc);
+        const piece_image = imgSrc.substring(14);
+        const piece = piece_image.split('.')[0];
+
+        //console.log(piece);
+        const row = Math.floor(i / 8), col = i % 8;
+        movablePositions = getMovablePositionsForPiece(piece, row, col);
+
+    }
+}
+
 
 
 function manageBackGroundOnClick(i) {
@@ -83,6 +173,7 @@ function getImageElement(image_name) {
 
 
 function initialBoard() {
+
 
     //add bgs
     for (let i = 0; i < tdElements.length; i++) {

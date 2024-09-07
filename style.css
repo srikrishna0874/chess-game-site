@@ -43,7 +43,7 @@ table tr td {
 
 
 }
-
+/*
 table tr:nth-child(even) td:nth-child(odd) {
 
     background-color: rgb(125, 148, 93);
@@ -62,7 +62,7 @@ table tr:nth-child(even) td:nth-child(even) {
     background-color: rgb(238, 238, 213);
 }
 
-
+*/
 img {
     width: 55px;
     height: 55px;
@@ -75,7 +75,16 @@ img {
 }
 
 
-table tr td .activeCell {
-    color: red !important;
-    z-index: 1;
+.activeCell {
+    background-color: rgb(185,202,67);
+   
+}
+
+
+.blackCell {
+    background-color: rgb(125, 148, 93);
+}
+
+.whiteCell {
+    background-color: rgb(238, 238, 213);
 }

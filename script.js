@@ -9,7 +9,7 @@ for (let i = 0; i < tdElements.length; i++) {
 
         if (tdElements[i].querySelector('img')) {
             tdElements[i].classList.add('showCursorPointer');
-            
+
         }
         //for placing pieces
         else {
@@ -18,9 +18,21 @@ for (let i = 0; i < tdElements.length; i++) {
     });
 
     tdElements[i].addEventListener('click', () => {
+        if (tdElements[i].classList.contains('whiteCell')) {
+            tdElements[i].classList.remove('whiteCell');
+        }
+        else if (tdElements[i].classList.contains('blackCell')) {
+            tdElements[i].classList.remove('blackCell');
+        }
         if (tdElements[i].classList.contains('activeCell')) {
             console.log('already active');
             tdElements[i].classList.remove('activeCell');
+            if(isBlack(i)) {
+                tdElements[i].classList.add('blackCell');
+            }
+            else {
+                tdElements[i].classList.add('whiteCell');
+            }
         }
         else {
             console.log('adding active bg');
@@ -29,7 +41,17 @@ for (let i = 0; i < tdElements.length; i++) {
     });
 }
 
-
+function isBlack(n) {
+    const row = Math.floor(n / 8);
+    const col = n % 8;
+    if (row % 2 == 0 && col % 2 == 0) {
+        return true;
+    }
+    if (row % 2 != 0 && col % 2 != 0) {
+        return true;
+    }
+    return false;
+}
 
 function getImageElement(image_name) {
     const img = document.createElement('img');
@@ -40,6 +62,19 @@ function getImageElement(image_name) {
 
 
 function initialBoard() {
+
+    //add bgs
+    for (let i = 0; i < tdElements.length; i++) {
+
+        if (isBlack(i)) {
+            tdElements[i].classList.add('blackCell');
+        }
+
+        else {
+            tdElements[i].classList.add('whiteCell');
+        }
+
+    }
     //place white pawns
     for (let i = 48; i <= 55; i++) {
         tdElements[i].appendChild(getImageElement('pawn_white'));

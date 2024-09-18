@@ -29,7 +29,12 @@ for (let i = 0; i < tdElements.length; i++) {
 
 
 function canBePlacedAtPos(row, col) {
-    index = row * 8 + col + 8;
+    index = row * 8 + col;
+    if (row >= 8 || col >= 8 || row < 0 || col < 0) {
+        return false;
+    }
+    //console.log('to check: ' + 'row= ' + row + ' and col= ' + col);
+    //console.log('index= ' + index);
     if (row < 8 && col < 8) {
         if (tdElements[index].querySelector('img')) {
             return false;
@@ -39,63 +44,204 @@ function canBePlacedAtPos(row, col) {
     return true;
 }
 
+function getPosForKnight(row, col) {
+    const res = [];
+    let eightPos = [[row + 2, col + 1], [row - 2, col + 1], [row + 1, col + 2], [row - 1, col + 2], [row - 1, col - 2], [row + 1, col - 2], [row + 2, col - 1], [row - 2, col - 1]];
+    //console.log(eightPos);
+    for (let i = 0; i < eightPos.length; i++) {
+        if (eightPos[i][0] >= 0 && eightPos[i][1] >= 0 && canBePlacedAtPos(eightPos[i][0], eightPos[i][1])) {
+            res.push(eightPos[i]);
+        }
+    }
+    return res;
+}
 
+
+function getPosForRook(row, col) {
+    const res = [];
+    let rr = row + 1;
+    while (rr < 8) {
+        if (canBePlacedAtPos(rr, col)) {
+            res.push([rr, col]);
+        }
+        else {
+            break;
+        }
+        rr++;
+    }
+    rr = row - 1;
+    while (rr >= 0) {
+        if (canBePlacedAtPos(rr, col)) {
+            res.push([rr, col]);
+        }
+        else {
+            break;
+        }
+        rr--;
+    }
+    let cc = col + 1;
+    while (cc < 8) {
+        if (canBePlacedAtPos(row, cc)) {
+            res.push([row, cc]);
+        }
+        else {
+            break;
+        }
+        cc++;
+    }
+    cc = col - 1;
+    while (cc >= 0) {
+        if (canBePlacedAtPos(row, cc)) {
+            res.push([row, cc]);
+        }
+        else {
+            break;
+        }
+        cc--;
+    }
+    return res;
+}
+
+
+function getPosForBishop(row, col) {
+    const res = [];
+    let rr = row + 1, cc = col + 1;
+    while (rr < 8 && cc < 8) {
+        if (canBePlacedAtPos(rr, cc)) {
+            res.push([rr, cc]);
+
+        }
+        else {
+            break;
+        }
+        rr++;
+        cc++;
+    }
+
+
+    rr = row - 1, cc = col + 1;
+    while (rr >= 0 && cc < 8) {
+        if (canBePlacedAtPos(rr, cc)) {
+
+            res.push([rr, cc]);
+        }
+        else {
+            break;
+        }
+        rr--;
+        cc++;
+    }
+
+    rr = row + 1, cc = col - 1;
+    while (rr < 8 && cc >= 0) {
+        if (canBePlacedAtPos(rr, cc)) {
+
+            res.push([rr, cc]);
+        }
+        else {
+            break;
+        }
+        rr++;
+        cc--;
+    }
+
+    rr = row - 1, cc = col - 1;
+    while (rr >= 0 && cc >= 0) {
+        if (canBePlacedAtPos(rr, cc)) {
+            res.push([rr, cc]);
+        }
+        else {
+            break;
+        }
+        rr--;
+        cc--;
+    }
+    return res;
+}
+
+function getPosForWhitePawn(row, col) {
+    const res = [];
+    const ind = row * 8 + col;
+    if (canBePlacedAtPos(row - 1, col)) {
+        res.push([row - 1, col]);
+        if (ind >= 48 && ind <= 55 && canBePlacedAtPos(row - 2, col)) {
+            res.push([row - 2, col]);
+        }
+    }
+    return res;
+}
+
+function getPosForBlackPawn(row, col) {
+    const res = [];
+    const ind = row * 8 + col;
+    if (canBePlacedAtPos(row + 1, col)) {
+        res.push([row + 1, col]);
+        if (ind >= 8 && ind <= 15 && canBePlacedAtPos(row + 2, col)) {
+            res.push([row + 2, col]);
+        }
+    }
+    return res;
+}
+
+
+function getPosForQueen(row, col) {
+    var rook_pos = getPosForRook(row, col);
+
+    var bishop_pos = getPosForBishop(row, col);
+
+    const res = rook_pos.concat(bishop_pos);
+
+    return res;
+}
+
+function getPosForKing(row, col) {
+    const res = [];
+    let eightDirs = [[row - 1, col - 1], [row - 1, col], [row - 1, col + 1], [row, col + 1], [row + 1, col + 1], [row + 1, col], [row + 1, col - 1], [row, col - 1]];
+    console.log(eightDirs);
+    for (let i = 0; i < eightDirs.length; i++) {
+        if (canBePlacedAtPos(eightDirs[i][0], eightDirs[i][1])) {
+            res.push(eightDirs[i]);
+        }
+    }
+    return res;
+}
 
 function getMovablePositionsForPiece(piece, row, col) {
-    const indicesToShowDots = [];
+    var indicesToShowDots = [];
     console.log('piece is at row=' + row + ' and col=' + col);
     if (piece == 'pawn_black') {
-        if (canBePlacedAtPos(row + 1, col)) {
-            indicesToShowDots.push([row + 1, col]);
-            if (canBePlacedAtPos(row + 2, col)) {
-                indicesToShowDots.push([row + 2, col]);
-            }
-        }
-
-
-
+        indicesToShowDots = getPosForBlackPawn(row, col);
     }
     else if (piece == 'pawn_white') {
-        if (canBePlacedAtPos(row - 1, col)) {
-            indicesToShowDots.push([row - 1, col]);
-            if (canBePlacedAtPos(row - 2, col)) {
-                indicesToShowDots.push([row - 2, col]);
-            }
-        }
+        indicesToShowDots = getPosForWhitePawn(row, col);
     }
-    else if (piece == 'rook_black') {
+    else if (piece == 'rook_black' || piece == 'rook_white') {
+        indicesToShowDots = getPosForRook(row, col);
 
     }
-    else if (piece == 'rook_white') {
-
+    else if (piece == 'knight_black' || piece == 'knight_white') {
+        indicesToShowDots = getPosForKnight(row, col);
     }
-    else if (piece == 'knight_black') {
-
+    else if (piece == 'bishop_black' || piece == 'bishop_white') {
+        indicesToShowDots = getPosForBishop(row, col);
     }
-    else if (piece == 'knight_white') {
-
+    else if (piece == 'queen_black' || piece == 'queen_white') {
+        indicesToShowDots = getPosForQueen(row, col);
     }
-    else if (piece == 'bishop_black') {
-
+    else if (piece == 'king_black' || piece == 'king_white') {
+        indicesToShowDots = getPosForKing(row, col);
     }
-    else if (piece == 'bishop_white') {
 
-    }
-    else if (piece == 'queen_black') {
-
-    }
-    else if (piece == 'queen_white') {
-
-    }
-    else if (piece == 'king_black') {
-
-    }
-    else if (piece == 'king_white') {
-
-    }
-    console.log(indicesToShowDots);
     return indicesToShowDots;
 }
+
+
+function getDotElement() {
+    const dot = document.createElement('div');
+    dot.classList.add('dot-element');
+    return dot;
+}
+
 
 function showDotsForClickedCell(i) {
     //console.log(tdElements[i].classList.toString());
@@ -109,7 +255,35 @@ function showDotsForClickedCell(i) {
         //console.log(piece);
         const row = Math.floor(i / 8), col = i % 8;
         movablePositions = getMovablePositionsForPiece(piece, row, col);
+        console.log('movable positions are:-');
+        console.log(movablePositions);
+        const movableIndicesFromPos = [];
+        for (let i = 0; i < movablePositions.length; i++) {
+            const row = movablePositions[i][0], col = movablePositions[i][1];
+            const index = row * 8 + col;
+            movableIndicesFromPos.push(index);
+        }
+        console.log(movableIndicesFromPos);
+        for (let i = 0; i < tdElements.length; i++) {
+            let dotEle = tdElements[i].querySelector('.dot-element');
+            if (dotEle) {
+                console.log('already dot is there ' + i);
+                dotEle.remove();
+            }
+            else if (movableIndicesFromPos.includes(i)) {
 
+                console.log('adding dot to ' + i);
+                tdElements[i].appendChild(getDotElement());
+            }
+
+        }
+        // for (let i = 0; i < tdElements.length; i++) {
+        //     if (movableIndicesFromPos.includes(i)) {
+        //         console.log('adding ' + i);
+        //         tdElements[index].appendChild(getDotElement());
+        //     }
+
+        // }
     }
 }
 

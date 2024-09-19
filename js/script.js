@@ -28,21 +28,7 @@ for (let i = 0; i < tdElements.length; i++) {
 
 
 
-function canBePlacedAtPos(row, col) {
-    index = row * 8 + col;
-    if (row >= 8 || col >= 8 || row < 0 || col < 0) {
-        return false;
-    }
-    //console.log('to check: ' + 'row= ' + row + ' and col= ' + col);
-    //console.log('index= ' + index);
-    if (row < 8 && col < 8) {
-        if (tdElements[index].querySelector('img')) {
-            return false;
-        }
 
-    }
-    return true;
-}
 
 function getPosForKnight(row, col) {
     const res = [];
@@ -236,21 +222,14 @@ function getMovablePositionsForPiece(piece, row, col) {
 }
 
 
-function getDotElement() {
-    const dot = document.createElement('div');
-    dot.classList.add('dot-element');
-    return dot;
-}
+
 
 
 function showDotsForClickedCell(i) {
     //console.log(tdElements[i].classList.toString());
     if (tdElements[i].classList.contains('activeCell')) {
-        const img = tdElements[i].querySelector('img');
-        const imgSrc = img.getAttribute('src');
-        //console.log(imgSrc);
-        const piece_image = imgSrc.substring(14);
-        const piece = piece_image.split('.')[0];
+
+        const piece = getPieceFromImageUrl(i);
 
         //console.log(piece);
         const row = Math.floor(i / 8), col = i % 8;
@@ -266,14 +245,16 @@ function showDotsForClickedCell(i) {
         console.log(movableIndicesFromPos);
         for (let i = 0; i < tdElements.length; i++) {
             let dotEle = tdElements[i].querySelector('.dot-element');
-            if (dotEle) {
-                console.log('already dot is there ' + i);
-                dotEle.remove();
-            }
-            else if (movableIndicesFromPos.includes(i)) {
 
-                console.log('adding dot to ' + i);
-                tdElements[i].appendChild(getDotElement());
+            if (movableIndicesFromPos.includes(i)) {
+
+                if (!dotEle) {
+                    console.log('adding dot to ' + i);
+                    tdElements[i].appendChild(getDotElement());
+                }
+            }
+            else if (dotEle) {
+                dotEle.remove();
             }
 
         }
@@ -287,7 +268,14 @@ function showDotsForClickedCell(i) {
     }
 }
 
-
+function removeDotsForAPiece(piece,row,col) {
+    const getPiecePos=getMovablePositionsForPiece(piece,row,col);
+    for(let i=0;i<getPiecePos.length;i++) {
+        const ind=getPiecePos[i][0]*8+getPiecePos[i][1];
+        const dotEle = tdElements[ind].querySelector('.dot-element');
+        dotEle.remove();
+    }
+}
 
 function manageBackGroundOnClick(i) {
     //remove active bg every where in the board if any
@@ -317,6 +305,10 @@ function manageBackGroundOnClick(i) {
         else {
             tdElements[i].classList.add('whiteCell');
         }
+        const piece = getPieceFromImageUrl(i);
+        const row = Math.floor(i / 8), col = i % 8;
+        removeDotsForAPiece(piece, row, col);
+
         previouslyActiveCellIndex = -1;
     }
     else {
@@ -326,17 +318,7 @@ function manageBackGroundOnClick(i) {
     }
 }
 
-function isBlack(n) {
-    const row = Math.floor(n / 8);
-    const col = n % 8;
-    if (row % 2 == 0 && col % 2 == 0) {
-        return true;
-    }
-    if (row % 2 != 0 && col % 2 != 0) {
-        return true;
-    }
-    return false;
-}
+
 
 function getImageElement(image_name) {
     const img = document.createElement('img');

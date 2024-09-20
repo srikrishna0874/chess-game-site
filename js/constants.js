@@ -36,6 +36,11 @@ function getPieceFromImageUrl(index) {
 }
 
 
+function getImageUrlFromPiece(piece) {
+    return "assets/images/"+piece+".png";
+}
+
+
 
 function isBlack(n) {
     const row = Math.floor(n / 8);
@@ -50,6 +55,13 @@ function isBlack(n) {
 }
 
 
-
+function removeAllDots() {
+    for(let i=0;i<tdElements.length;i++) {
+        const dotElement=tdElements[i].querySelector('.dot-element');
+        if(dotElement) {
+            dotElement.remove();
+        }
+    }
+}
 
 

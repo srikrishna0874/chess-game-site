@@ -10,7 +10,7 @@ for (let i = 0; i < tdElements.length; i++) {
     tdElements[i].addEventListener('mouseenter', () => {
         //for showing dots
 
-        if (tdElements[i].querySelector('img')) {
+        if (tdElements[i].querySelector('img') || tdElements[i].querySelector('.dot-element')) {
             tdElements[i].classList.add('showCursorPointer');
 
         }
@@ -23,11 +23,31 @@ for (let i = 0; i < tdElements.length; i++) {
             manageBackGroundOnClick(i);
             showDotsForClickedCell(i);
         }
+        else if (tdElements[i].querySelector('.dot-element')) {
+            console.log('clicked on dot');
+            removeAllDots();
+            console.log(previouslyActiveCellIndex);
+            const piece=getPieceFromImageUrl(previouslyActiveCellIndex);
+            console.log(piece);
+            placeAndRemovePiece(previouslyActiveCellIndex, i, piece);
+
+            // const img=tdElements[previouslyActiveCellIndex].querySelector('img');
+            // const dotEle=tdElements[i].querySelector('img');
+            // tdElements[i].appendChild(img);
+            // dotEle.remove();
+        }
     });
 }
 
 
+function placeAndRemovePiece(curPieceIndex, dotIndex, piece) {
+    const curPieceElement = tdElements[curPieceIndex].querySelector('img');
+    if (curPieceElement) {
+        curPieceElement.remove();
+    }
+    tdElements[dotIndex].appendChild(getImageElement(piece));
 
+}
 
 
 function getPosForKnight(row, col) {
@@ -268,10 +288,10 @@ function showDotsForClickedCell(i) {
     }
 }
 
-function removeDotsForAPiece(piece,row,col) {
-    const getPiecePos=getMovablePositionsForPiece(piece,row,col);
-    for(let i=0;i<getPiecePos.length;i++) {
-        const ind=getPiecePos[i][0]*8+getPiecePos[i][1];
+function removeDotsForAPiece(piece, row, col) {
+    const getPiecePos = getMovablePositionsForPiece(piece, row, col);
+    for (let i = 0; i < getPiecePos.length; i++) {
+        const ind = getPiecePos[i][0] * 8 + getPiecePos[i][1];
         const dotEle = tdElements[ind].querySelector('.dot-element');
         dotEle.remove();
     }

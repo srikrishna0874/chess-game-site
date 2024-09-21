@@ -4,15 +4,23 @@ const tdElements = document.getElementsByTagName('TD');
 
 let previouslyActiveCellIndex = -1;
 let chessBoard = [];
+let currentGame = 'white';
 
 
 for (let i = 0; i < tdElements.length; i++) {
     tdElements[i].addEventListener('mouseenter', () => {
         //for showing dots
 
-        if (tdElements[i].querySelector('img') || tdElements[i].querySelector('.dot-element')) {
-            tdElements[i].classList.add('showCursorPointer');
+        if (tdElements[i].querySelector('img')) {
+            const piece = getPieceFromImageUrl(i);
+            if (getColorOfPiece(piece) == currentGame) {
+                tdElements[i].classList.add('showCursorPointer');
 
+            }
+
+        }
+        if (tdElements[i].querySelector('.dot-element')) {
+            tdElements[i].classList.add('showCursorPointer');
         }
 
     });
@@ -20,16 +28,25 @@ for (let i = 0; i < tdElements.length; i++) {
     tdElements[i].addEventListener('click', () => {
 
         if (tdElements[i].querySelector('img')) {
-            manageBackGroundOnClick(i);
-            showDotsForClickedCell(i);
+            const piece = getPieceFromImageUrl(i);
+            if (getColorOfPiece(piece) == currentGame) {
+                manageBackGroundOnClick(i);
+                showDotsForClickedCell(i);
+            }
         }
         else if (tdElements[i].querySelector('.dot-element')) {
             console.log('clicked on dot');
             removeAllDots();
             console.log(previouslyActiveCellIndex);
-            const piece=getPieceFromImageUrl(previouslyActiveCellIndex);
+            const piece = getPieceFromImageUrl(previouslyActiveCellIndex);
             console.log(piece);
             placeAndRemovePiece(previouslyActiveCellIndex, i, piece);
+            if(currentGame=='white') {
+                currentGame='black';
+            }
+            else {
+                currentGame='white';
+            }
 
             // const img=tdElements[previouslyActiveCellIndex].querySelector('img');
             // const dotEle=tdElements[i].querySelector('img');
@@ -301,7 +318,7 @@ function manageBackGroundOnClick(i) {
     //remove active bg every where in the board if any
     if (previouslyActiveCellIndex != -1) {
         tdElements[previouslyActiveCellIndex].classList.remove('activeCell');
-        if (isBlack(previouslyActiveCellIndex)) {
+        if (isBlackBackGround(previouslyActiveCellIndex)) {
             tdElements[previouslyActiveCellIndex].classList.add('blackCell');
         }
         else {
@@ -319,7 +336,7 @@ function manageBackGroundOnClick(i) {
     if (i == previouslyActiveCellIndex) {
         console.log('already active');
         tdElements[i].classList.remove('activeCell');
-        if (isBlack(i)) {
+        if (isBlackBackGround(i)) {
             tdElements[i].classList.add('blackCell');
         }
         else {
@@ -354,7 +371,7 @@ function initialBoard() {
     //add bgs
     for (let i = 0; i < tdElements.length; i++) {
 
-        if (isBlack(i)) {
+        if (isBlackBackGround(i)) {
             tdElements[i].classList.add('blackCell');
         }
 

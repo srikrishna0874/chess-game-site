@@ -37,12 +37,12 @@ function getPieceFromImageUrl(index) {
 
 
 function getImageUrlFromPiece(piece) {
-    return "assets/images/"+piece+".png";
+    return "assets/images/" + piece + ".png";
 }
 
 
 
-function isBlack(n) {
+function isBlackBackGround(n) {
     const row = Math.floor(n / 8);
     const col = n % 8;
     if (row % 2 == 0 && col % 2 == 0) {
@@ -56,12 +56,17 @@ function isBlack(n) {
 
 
 function removeAllDots() {
-    for(let i=0;i<tdElements.length;i++) {
-        const dotElement=tdElements[i].querySelector('.dot-element');
-        if(dotElement) {
+    for (let i = 0; i < tdElements.length; i++) {
+        const dotElement = tdElements[i].querySelector('.dot-element');
+        if (dotElement) {
             dotElement.remove();
         }
     }
 }
 
 
+function getColorOfPiece(piece) {
+    const splittedStrings = piece.split('_');
+    //console.log(splittedStrings);
+    return splittedStrings[1];
+}

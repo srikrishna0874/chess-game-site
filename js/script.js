@@ -5,13 +5,17 @@ const tdElements = document.getElementsByTagName('TD');
 let previouslyActiveCellIndex = -1;
 let chessBoard = [];
 let currentGame = 'white';
+const blackOutPieces = [];
+const whiteOutPieces = [];
 
 
 for (let i = 0; i < tdElements.length; i++) {
     tdElements[i].addEventListener('mouseenter', () => {
         //for showing dots
-
-        if (tdElements[i].querySelector('img')) {
+        if (tdElements[i].querySelector('.enemy-circle')) {
+            tdElements[i].classList.add('showCursorPointer');
+        }
+        else if (tdElements[i].querySelector('img')) {
             const piece = getPieceFromImageUrl(i);
             if (getColorOfPiece(piece) == currentGame) {
                 tdElements[i].classList.add('showCursorPointer');
@@ -33,7 +37,19 @@ for (let i = 0; i < tdElements.length; i++) {
 
     tdElements[i].addEventListener('click', () => {
 
-        if (tdElements[i].querySelector('img')) {
+        if (tdElements[i].querySelector('.enemy-circle')) {
+            console.log('clicked on enemy piece');
+            removeAllDots();
+            removeAllCircleElements();
+            killEnemy(i,previouslyActiveCellIndex);
+            if (currentGame == 'white') {
+                currentGame = 'black';
+            }
+            else {
+                currentGame = 'white';
+            }
+        }
+        else if (tdElements[i].querySelector('img')) {
             const piece = getPieceFromImageUrl(i);
             if (getColorOfPiece(piece) == currentGame) {
                 manageBackGroundOnClick(i);
@@ -60,8 +76,28 @@ for (let i = 0; i < tdElements.length; i++) {
             // tdElements[i].appendChild(img);
             // dotEle.remove();
         }
+        
     });
 }
+
+
+function killEnemy(enemyIndex,currIndex) {
+    const enemyElement=tdElements[enemyIndex].querySelector('img');
+    const currElement=tdElements[currIndex].querySelector('img');
+    const enemyPiece=getPieceFromImageUrl(enemyIndex);
+    const currPiece=getPieceFromImageUrl(currIndex);
+    enemyElement.remove();
+    currElement.remove();
+    tdElements[enemyIndex].appendChild(getImageElement(currPiece));
+    const curColor=getColorOfPiece(currPiece);
+    if(curColor=='black') {
+        blackOutPieces.push(enemyPiece);
+    }
+    else {
+        whiteOutPieces.push(currPiece);
+    }
+}
+
 
 
 function placeAndRemovePiece(curPieceIndex, dotIndex, piece) {
@@ -379,9 +415,9 @@ function getEnemiesForKing(row, col, enemy) {
 }
 
 
-function getEnemiesForQueen(row,col,enemy) {
-    const res1=getEnemiesForBishop(row,col,enemy);
-    const res2=getEnemiesForRook(row,col,enemy);
+function getEnemiesForQueen(row, col, enemy) {
+    const res1 = getEnemiesForBishop(row, col, enemy);
+    const res2 = getEnemiesForRook(row, col, enemy);
     return res1.concat(res2);
 }
 
@@ -435,6 +471,7 @@ function showEnemiesIfAny(piece, ind) {
     for (let i = 0; i < enemyPos.length; i++) {
         const ind = enemyPos[i][0] * 8 + enemyPos[i][1];
         tdElements[ind].appendChild(getEnemyCircleElement());
+        
     }
 }
 

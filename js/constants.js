@@ -71,6 +71,15 @@ function removeAllDots() {
     }
 }
 
+function removeAllCircleElements() {
+    for (let i = 0; i < tdElements.length; i++) {
+        const enemyElement = tdElements[i].querySelector('.enemy-circle');
+        if (enemyElement) {
+            enemyElement.remove();
+        }
+    }
+}
+
 
 function getColorOfPiece(piece) {
     const splittedStrings = piece.split('_');

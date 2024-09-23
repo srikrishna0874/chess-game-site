@@ -101,3 +101,17 @@ img {
     left: 35%;
     
 }
+
+
+.enemy-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 5px solid rgb(0,0,0,0.14);
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

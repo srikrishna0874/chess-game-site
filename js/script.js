@@ -17,10 +17,16 @@ for (let i = 0; i < tdElements.length; i++) {
                 tdElements[i].classList.add('showCursorPointer');
 
             }
+            else {
+                tdElements[i].classList.remove('showCursorPointer');
+            }
 
         }
-        if (tdElements[i].querySelector('.dot-element')) {
+        else if (tdElements[i].querySelector('.dot-element')) {
             tdElements[i].classList.add('showCursorPointer');
+        }
+        else {
+            tdElements[i].classList.remove('showCursorPointer');
         }
 
     });
@@ -32,6 +38,7 @@ for (let i = 0; i < tdElements.length; i++) {
             if (getColorOfPiece(piece) == currentGame) {
                 manageBackGroundOnClick(i);
                 showDotsForClickedCell(i);
+                showEnemiesIfAny(piece, i);
             }
         }
         else if (tdElements[i].querySelector('.dot-element')) {
@@ -41,11 +48,11 @@ for (let i = 0; i < tdElements.length; i++) {
             const piece = getPieceFromImageUrl(previouslyActiveCellIndex);
             console.log(piece);
             placeAndRemovePiece(previouslyActiveCellIndex, i, piece);
-            if(currentGame=='white') {
-                currentGame='black';
+            if (currentGame == 'white') {
+                currentGame = 'black';
             }
             else {
-                currentGame='white';
+                currentGame = 'white';
             }
 
             // const img=tdElements[previouslyActiveCellIndex].querySelector('img');
@@ -260,6 +267,176 @@ function getMovablePositionsForPiece(piece, row, col) {
 
 
 
+
+
+
+function getEnemiesForWhitePawn(row, col, enemy) {
+    var mayEnemyPos = [[row - 1, col - 1], [row - 1, col + 1]];
+    return commonReturningEnemyPos(mayEnemyPos, enemy);
+}
+
+
+function getEnemiesForBlackPawn(row, col, enemy) {
+    var mayEnemyPos = [[row + 1, col - 1], [row + 1, col + 1]];
+
+    return commonReturningEnemyPos(mayEnemyPos, enemy);
+}
+
+
+function getEnemiesForKnight(row, col, enemy) {
+    var mayEnemyPos = [[row + 2, col + 1], [row - 2, col + 1], [row + 1, col + 2], [row - 1, col + 2], [row - 1, col - 2], [row + 1, col - 2], [row + 2, col - 1], [row - 2, col - 1]];
+
+
+    return commonReturningEnemyPos(mayEnemyPos, enemy);
+}
+
+function getEnemiesForRook(row, col, enemy) {
+    var mayEnemyPos = [];
+    let rr = row - 1, cc = col - 1;
+    while (rr > 0) {
+        if (!canBePlacedAtPos(rr, col)) {
+            mayEnemyPos.push([rr, col]);
+            break;
+        }
+        rr--;
+    }
+    rr = row + 1;
+    while (rr < 8) {
+        if (!canBePlacedAtPos(rr, col)) {
+            mayEnemyPos.push([rr, col]);
+            break;
+        }
+        rr++;
+    }
+    while (cc > 0) {
+        if (!canBePlacedAtPos(row, cc)) {
+            mayEnemyPos.push([row, cc]);
+            break;
+        }
+        cc--;
+    }
+    cc = col + 1;
+    while (cc < 8) {
+        if (!canBePlacedAtPos(row, cc)) {
+            mayEnemyPos.push([row, cc]);
+            break;
+        }
+        cc++;
+    }
+    return commonReturningEnemyPos(mayEnemyPos, enemy);
+}
+
+
+function getEnemiesForBishop(row, col, enemy) {
+    var mayEnemyPos = [];
+    let rr = row - 1, cc = col - 1;
+    while (rr > 0 && cc > 0) {
+        if (!canBePlacedAtPos(rr, cc)) {
+            mayEnemyPos.push([rr, cc]);
+            break;
+        }
+        rr--;
+        cc--;
+    }
+    rr = row - 1;
+    cc = col + 1;
+    while (rr > 0 && cc < 8) {
+        if (!canBePlacedAtPos(rr, cc)) {
+            mayEnemyPos.push([rr, cc]);
+            break;
+        }
+        rr--;
+        cc++;
+    }
+    rr = row + 1;
+    cc = col - 1;
+    while (rr < 8 && cc > 0) {
+        if (!canBePlacedAtPos(rr, cc)) {
+            mayEnemyPos.push([rr, cc]);
+            break;
+        }
+        rr++;
+        cc--;
+    }
+    rr = row + 1;
+    cc = col + 1;
+    while (rr < 8 && cc < 8) {
+        if (!canBePlacedAtPos(rr, cc)) {
+            mayEnemyPos.push([rr, cc]);
+            break;
+        }
+        rr++;
+        cc++;
+    }
+    return commonReturningEnemyPos(mayEnemyPos, enemy);
+}
+
+
+function getEnemiesForKing(row, col, enemy) {
+    var mayEnemyPos = [[row - 1, col - 1], [row - 1, col], [row - 1, col + 1], [row, col + 1], [row + 1, col + 1], [row + 1, col], [row + 1, col - 1], [row, col - 1]];
+    return commonReturningEnemyPos(mayEnemyPos, enemy);
+
+}
+
+
+function getEnemiesForQueen(row,col,enemy) {
+    const res1=getEnemiesForBishop(row,col,enemy);
+    const res2=getEnemiesForRook(row,col,enemy);
+    return res1.concat(res2);
+}
+
+
+
+function getEnemyPos(piece, row, col) {
+    var enemyIndices = [];
+    if (piece == 'pawn_white') {
+        enemyIndices = getEnemiesForWhitePawn(row, col, 'black');
+    }
+    else if (piece == 'pawn_black') {
+        enemyIndices = getEnemiesForBlackPawn(row, col, 'white');
+    }
+    else if (piece == 'rook_black') {
+        enemyIndices = getEnemiesForRook(row, col, 'white');
+    }
+    else if (piece == 'rook_white') {
+        enemyIndices = getEnemiesForRook(row, col, 'black');
+    }
+    else if (piece == 'knight_black') {
+        enemyIndices = getEnemiesForKnight(row, col, 'white');
+    }
+    else if (piece == 'knight_white') {
+        enemyIndices = getEnemiesForKnight(row, col, 'black');
+    }
+    else if (piece == 'bishop_black') {
+        enemyIndices = getEnemiesForBishop(row, col, 'white');
+    }
+    else if (piece == 'bishop_white') {
+        enemyIndices = getEnemiesForBishop(row, col, 'black');
+    }
+    else if (piece == 'king_black') {
+        enemyIndices = getEnemiesForKing(row, col, 'white');
+    }
+    else if (piece == 'king_white') {
+        enemyIndices = getEnemiesForKing(row, col, 'black');
+    }
+    else if (piece == 'queen_black') {
+        enemyIndices = getEnemiesForQueen(row, col, 'white');
+    }
+    else if (piece == 'queen_white') {
+        enemyIndices = getEnemiesForQueen(row, col, 'black');
+    }
+    return enemyIndices;
+}
+
+
+function showEnemiesIfAny(piece, ind) {
+    const row = Math.floor(ind / 8), col = ind % 8;
+    const enemyPos = getEnemyPos(piece, row, col);
+    for (let i = 0; i < enemyPos.length; i++) {
+        const ind = enemyPos[i][0] * 8 + enemyPos[i][1];
+        tdElements[ind].appendChild(getEnemyCircleElement());
+    }
+}
 
 
 function showDotsForClickedCell(i) {
